@@ -1,4 +1,12 @@
 # munifotos
 
-![GitHub Logo](/images/example.jpg)
+![Image with map](/images/example.jpg)
+
+![Screenshot](/images/screenshot.png)
+
+![directories1](/images/directories1.png)
+
+![directories2](/images/directories2.png)
+
+![directories3](/images/directories1.png)
 
