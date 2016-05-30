@@ -209,7 +209,6 @@ public class TelaPrincipal extends JFrame implements ActionListener {
                     dataFoto = sdf.parse(field.getStringValue());
                     pastaDestino = caminhoDestino.toString() + "/" + sdfPasta.format(dataFoto) + "/";
                 }
-
                 final TiffImageMetadata exifMetadata = jpegMetadata.getExif();
                 try {
                     if (null != exifMetadata) {
@@ -226,23 +225,30 @@ public class TelaPrincipal extends JFrame implements ActionListener {
                             BufferedImage original = ImageIO.read(origem);
                             BufferedImage destino = new BufferedImage(1920, (int) (original.getHeight() * (1920.0 / original.getWidth())), BufferedImage.TYPE_INT_RGB);
                             URL website = new URL("https://maps.googleapis.com/maps/api/staticmap?size=480x" + ((int) (original.getHeight() * (480.0 / original.getWidth()))) + "&maptype=roadmap&zoom=12&markers=color:red|" + latitude + "," + longitude);
+                            System.out.println("---->" + website.toString());
                             BufferedImage mapa = ImageIO.read(website);
                             destino.getGraphics().drawImage(original, 0, 0, destino.getWidth(), destino.getHeight(), this);
                             destino.getGraphics().drawImage(mapa, destino.getWidth() - mapa.getWidth(), destino.getHeight() - mapa.getHeight(), this);
-
                             ImageIO.write(destino, "jpg", new File(caminhoDestino.toString() + "/maps/map-" + sdfFileName.format(dataFoto) + ".jpg"));
-
                         }
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    System.out.println("---Problema no MAPA -->"+ex.toString());
                 }
 
             }
             File pd = new File(pastaDestino);
             pd.mkdirs();
             File destino = new File(pd, origem.getName());
-            Files.copy(origem.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            if (destino.exists()) {
+                if (origem.length() > destino.length()) {
+                    Files.copy(origem.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                } else {
+                    System.out.println("----> Ja existe " + destino.getAbsolutePath());
+                }
+            } else {
+                Files.copy(origem.toPath(), destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
 
         } catch (Exception ex) {
             Logger.getLogger(TelaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
